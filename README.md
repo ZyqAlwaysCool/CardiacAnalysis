@@ -19,8 +19,11 @@
 左心室室壁运动振幅预测思路：找到舒张末期和收缩末期帧，分别拟合椭圆，基于椭圆长短轴将轮廓坐标点划分为四个象限，通过椭圆左侧的轮廓坐标点，计算出舒张末期和收缩末期x轴平均运动距离，与正常心超的运动距离区间做对比，给出一个经验值粗判。
 
 ### 2.快速开始
-* 安装依赖包:`pip install -r requirements.txt`
-* 跑camus数据集用例(需下载数据集):`python main.py -c`
+* 安装依赖包: `pip install -r requirements.txt`
+* camus
+  * 跑camus数据集用例(需下载数据集): `python main.py -c`
+  * 对整个camus数据集进行评估(默认使用图像质量为good的数据, 2ch和4ch独立测评): `python main.py -e`
+* 自定义视频: `python main.py -v {your_video_path}`
 
 ### 3.参考
 * camus数据集: https://paperswithcode.com/dataset/camus

@@ -1,7 +1,7 @@
 '''
 Author: zyq
 Date: 2024-05-09 10:57:17
-LastEditTime: 2024-05-09 11:47:48
+LastEditTime: 2024-06-18 10:24:22
 FilePath: /CardiacAnalysis/utils/utils.py
 Description: lv utils
 
@@ -11,15 +11,21 @@ Copyright (c) 2024 by zyq, All Rights Reserved.
 import cv2
 import numpy as np
 import math
+import matplotlib.pyplot as plt
+import time
+import os
 
 class LeftVentricularUtils:
     def __init__(self, lv_mask_label=1):
         self.lv_mask_label = lv_mask_label
+        self.areas_list = [] #连通区域列表, 基于视频帧区分
+        self.ellipse_list = [] #拟合椭圆列表, 基于视频帧区分
+        self.lv_vol_list = [] #左心室体积列表, 基于视频帧区分
     
     #private method
     def __get_lv_mask(self, mask_img):
         new_mask = np.array(mask_img)
-        new_mask[new_mask != self.lv_mask_label] = 0
+        new_mask[new_mask != self.lv_mask_label] = 0 #只选取左心室轮廓, 其他预测部位标签置为0
         return new_mask
     
     def __get_lv_area(self, lv_mask):
@@ -87,9 +93,7 @@ class LeftVentricularUtils:
 
     #pred lvef value
     def get_pred_lvef(self, predict_mask_list):
-        areas_list = []
-        ellipse_list = []
-        
+        real_max_areas, real_min_areas = 0, 0
         for predict_mask in predict_mask_list:
             #1.get lv mask
             predict_mask = np.array(predict_mask)
@@ -97,18 +101,19 @@ class LeftVentricularUtils:
 
             #2.get lv area and ellipse info
             max_area, max_contour = self.__get_lv_area(lv_mask)
-            ellipse = cv2.fitEllipse(max_contour)
-            areas_list.append(max_area)
-            ellipse_list.append(ellipse)
-            real_max_areas = max(areas_list)
-            real_min_areas = min(areas_list)
+            ellipse = cv2.fitEllipse(max_contour) #拟合椭圆
+            self.areas_list.append(max_area) #左心室面积连通域列表
+            self.ellipse_list.append(ellipse)
 
+        real_max_areas = max(self.areas_list) #最大像素面积
+        real_min_areas = min(self.areas_list) #最小像素面积
+        
         #3.cal lvef value
-        max_areas_idx = areas_list.index(real_max_areas)
-        min_areas_idx = areas_list.index(real_min_areas)
+        max_areas_idx = self.areas_list.index(real_max_areas)
+        min_areas_idx = self.areas_list.index(real_min_areas)
         #long axis
-        max_long_axis = ellipse_list[max_areas_idx][1][1]
-        min_long_axis = ellipse_list[min_areas_idx][1][1] 
+        max_long_axis = self.ellipse_list[max_areas_idx][1][1]
+        min_long_axis = self.ellipse_list[min_areas_idx][1][1] 
 
         pred_edv = self.__cal_lv_vol(real_max_areas, max_long_axis)
         pred_esv = self.__cal_lv_vol(real_min_areas, min_long_axis)
@@ -133,3 +138,44 @@ class LeftVentricularUtils:
         left_x_means = np.mean(np.array([dot[0] for dot in quad_1_dots] + [dot[0] for dot in quad_4_dots]))
         return left_up_x_means, left_down_x_means, left_x_means
     
+    # 基于像素面积拟合椭圆，计算左心室容积信息
+    def get_lv_vol_info(self) -> list:
+        if len(self.areas_list) != len(self.ellipse_list):
+            raise Exception('areas_list and ellipse_list length not equal')
+
+        all_frames = len(self.areas_list)
+        for frame in range(all_frames):
+            areas = self.areas_list[frame]
+            ellipse_long_axis = self.ellipse_list[frame][1][1]
+            lv_vol_info = self.__cal_lv_vol(areas, ellipse_long_axis)
+            self.lv_vol_list.append(lv_vol_info)
+        
+        return self.lv_vol_list
+
+class VisualDisplayUtils:
+    def __init__(self):
+        self.default_path = './display_result'
+        if not os.path.exists(self.default_path):
+            os.makedirs(self.default_path)
+        else:
+            pass
+
+    def gen_curve_graph(self, x, y, title='curve', x_label='x axis label', y_label='y axis label'):
+        plt.scatter(x, y, color='red')
+        plt.plot(x, y, linestyle='--', color='blue')
+
+        plt.plot(x, y)
+        
+        plt.title(title)
+        plt.xlabel(x_label)
+        plt.ylabel(y_label)
+
+        plt.grid(True)
+        plt.tick_params(axis='y', which='both', labelleft=False, left=False)
+        
+        fig_name = self.default_path + '/' + 'lv_vol' + '_' + str(int(time.time())) + '.png'
+        plt.savefig(fig_name)
+        
+        return
+        
+        
