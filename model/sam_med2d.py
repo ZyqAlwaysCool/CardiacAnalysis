@@ -48,29 +48,6 @@ class SAMMedPredictor(BaseSegModel):
 
         return masks.astype(np.uint8)[0]
 
-
-
-# class SAMMed:
-#     def __init__(self, model_weight):
-#         args = Namespace()
-#         args.image_size = 256
-#         args.encoder_adapter = True
-#         args.sam_checkpoint = model_weight
-#         self.sam_model = sam_model_registry["vit_b"](args).to('cuda')
-#         self.sam_predictor = SammedPredictor(self.sam_model)
-    
-#     def get_img_masks(self, input_img):
-#         input_img = input_img * 255
-#         self.sam_predictor.set_image(input_img)
-#         masks, scores, logits = self.sam_predictor.predict(
-#             point_coords=None,
-#             point_labels=None,
-#             multimask_output=True,
-#             #mask_input = mask_inputs,
-#         )
-        
-#         return masks.astype(np.uint8)[0]
-
 if __name__ == '__main__':
     sam_model = SAMMedPredictor()
     sam_model.load_model('/home/kemove/zyq/giit/cardiac/CardiacAnalysis/checkpoints/sam_best_v1.pth')

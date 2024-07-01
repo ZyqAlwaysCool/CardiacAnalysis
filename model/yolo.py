@@ -38,27 +38,6 @@ class YoloSegPredictor(BaseSegModel):
             mask_result = pred_target_mask
         return mask_result
 
-# class YoloSeg:
-#     def __init__(self, model_weight):
-#         self.yolo_seg_model = YOLO(model_weight)
-    
-#     def get_yolo_pred_masks(self, input_img_path, pred_clss):
-#         if not os.path.exists(input_img_path):
-#             raise Exception('img path is not exist. check it. path=({})'.format(input_img_path))
-        
-#         pred_mask_results_list = []
-#         yolo_results = self.yolo_seg_model.predict(input_img_path, retina_masks=True)
-
-#         for res in yolo_results:
-#             masks = res.masks.data
-#             boxes = res.boxes.data
-#             clss = boxes[:, 5]
-#             pred_target_idx = torch.where(clss == pred_clss)
-#             pred_target_mask = masks[pred_target_idx][0,:,:].cpu().numpy().astype(np.uint8)
-#             pred_mask_results_list.append(pred_target_mask)
-        
-#         return pred_mask_results_list
-
 if __name__ == '__main__':
     yolo_predictor = YoloSegPredictor()
     yolo_predictor.load_model('/home/kemove/zyq/giit/cardiac/CardiacAnalysis/checkpoints/yolov8_best_v2.pt')
