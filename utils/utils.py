@@ -1,7 +1,7 @@
 '''
 Author: zyq
 Date: 2024-05-09 10:57:17
-LastEditTime: 2024-06-18 10:24:22
+LastEditTime: 2024-06-21 11:49:31
 FilePath: /CardiacAnalysis/utils/utils.py
 Description: lv utils
 
@@ -98,13 +98,19 @@ class LeftVentricularUtils:
             #1.get lv mask
             predict_mask = np.array(predict_mask)
             lv_mask = self.__get_lv_mask(predict_mask).astype(np.uint8)
+            if self.lv_mask_label not in list(np.unique(lv_mask)):
+                #预测的图像mask中没有lv mask, 跳过图像
+                continue
 
             #2.get lv area and ellipse info
             max_area, max_contour = self.__get_lv_area(lv_mask)
             ellipse = cv2.fitEllipse(max_contour) #拟合椭圆
             self.areas_list.append(max_area) #左心室面积连通域列表
             self.ellipse_list.append(ellipse)
-
+        
+        if len(self.areas_list) == 0:
+            return math.inf, -1, -1
+        
         real_max_areas = max(self.areas_list) #最大像素面积
         real_min_areas = min(self.areas_list) #最小像素面积
         
