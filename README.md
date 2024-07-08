@@ -23,6 +23,7 @@
 * vm-unetv2
 * sam-med2d
 * yolov8
+多模型指标评测性能实验报告见: `eval_model/EVAL_EF.md`
 
 
 ### 2.快速开始
@@ -31,7 +32,7 @@
   * 跑camus数据集用例(需下载数据集): `python main.py -c -m {model_name}`
   * 对整个camus数据集进行评估(默认使用图像质量为good的数据, 2ch和4ch独立测评), 见`eval_model/eval_model.py`
 * 自定义视频: `python main.py -v {your_video_path}`
-* 完整步骤: 训练模型--->将权重放在`checkpoints`--->修改`configs/model_configs.py`--->基于`base_model.py`实现具体模型推理接口,注册至`model_factory.py`--->在`main.py`使用或在`eval_model.py`中对数据集进行模型性能评测，实验评测报告见`eval_model/EVAL_EF.md`
+* 完整步骤: 训练模型--->将权重放在`checkpoints`--->修改`configs/model_configs.py`--->基于`base_model.py`实现具体模型推理接口,注册至`model_factory.py`--->在`main.py`使用或在`eval_model.py`中对数据集进行模型性能评测
 
 ### 4.参考
 * camus数据集: https://paperswithcode.com/dataset/camus
