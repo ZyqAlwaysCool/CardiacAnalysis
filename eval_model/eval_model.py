@@ -1,5 +1,5 @@
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '4'
 import sys
 sys.path.append('..')
 sys.path.append('../model/')
@@ -106,6 +106,6 @@ class ModelEvaluator:
 
 if __name__ == '__main__':
     dataset = 'camus'
-    model_name = 'sam-med2d'
+    model_name = 'yolov8-seg'
     model_evaluator = ModelEvaluator(dataset, model_name)
     model_evaluator.evaluate_model()

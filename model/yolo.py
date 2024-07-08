@@ -30,12 +30,15 @@ class YoloSegPredictor(BaseSegModel):
         mask_result = None
         yolo_results = self.model.predict(input_img, retina_masks=True)
         for res in yolo_results:
-            masks = res.masks.data
-            boxes = res.boxes.data
-            clss = boxes[:, 5]
-            pred_target_idx = torch.where(clss == self.pred_clss)
-            pred_target_mask = masks[pred_target_idx][0,:,:].cpu().numpy().astype(np.uint8)
-            mask_result = pred_target_mask
+            try:
+                masks = res.masks.data
+                boxes = res.boxes.data
+                clss = boxes[:, 5]
+                pred_target_idx = torch.where(clss == self.pred_clss)
+                pred_target_mask = masks[pred_target_idx][0,:,:].cpu().numpy().astype(np.uint8)
+                mask_result = pred_target_mask
+            except:
+                continue
         return mask_result
 
 if __name__ == '__main__':
