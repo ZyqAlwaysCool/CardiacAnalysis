@@ -1,9 +1,7 @@
 **数据来源：**[https://www.kaggle.com/datasets/toygarr/camus-dataset](https://www.kaggle.com/datasets/toygarr/camus-dataset)<br />**数据构成：**
 
 1. unet-camus：默认使用，统一训练数据为4ch视图，训练集样本量：675，验证集样本量：225，使用4ch中的各病例视频sequence作为测试样本集，模拟真实医生输入
-   1. yolo-format-path: `/home/kemove/zyq/giit/dataset/camus-datasets-yolo/4ch`
-2. large-camus：yolo系列模型存在无法收敛或推理报错的问题，此时使用备用数据集large-camus。于原始camus数据集，提取4ch和2ch标注图像，并根据8:2比例划分的数据集，图像尺寸不一，训练数据：1443，验证集363
-   1. yolo-format-path: `/home/kemove/zyq/giit/cardiac/yolo/datasets/camus/partition820`
+2. large-camus：yolo系列模型存在无法收敛或推理报错的问题，此时使用备用数据集large-camus。基于原始camus数据集，提取4ch和2ch标注图像，并根据8:2比例划分的数据集，图像尺寸不一，训练数据：1443，验证集363
 
 **项目路径：**/home/kemove/zyq/giit/cardiac/CardiacAnalysis。git链接：[https://git.giitllm.cn/ai/CardiacAnalysis](https://git.giitllm.cn/ai/CardiacAnalysis)<br />**评测数据：**原camus数据集中所有未标注的视频序列帧，只取图像质量为good的case。默认为心尖4腔室视频<br />**评测步骤：**
 
@@ -13,7 +11,7 @@
 4. 切虚拟环境：conda activate py311-yolo
 5. python /home/kemove/zyq/giit/cardiac/CardiacAnalysis/eval_model/eval_model.py
 
-**评价指指标：** 根据ef预测值误差比例作为模型性能指标，分析流水线：分割模型做左心室分割--->连通区域基于cv2拟合椭圆--->计算ef预测值。各模型统一下游处理流程，**仅变更分割模块**
+**评价指标：** 根据ef预测值误差比例作为模型性能指标，分析流水线：分割模型做左心室分割--->连通区域基于cv2拟合椭圆--->计算ef预测值。各模型统一下游处理流程，**仅变更分割模块**
 
 <a name="G69Hh"></a>
 ### Unet
@@ -36,6 +34,10 @@ unet网络学习：[https://zhuanlan.zhihu.com/p/44958351](https://zhuanlan.zhih
 
 <a name="zdlWS"></a>
 #### 实验
+使用数据集：
+
+- unet-camus：/home/kemove/zyq/giit/dataset/camus-datasets-yolo/4ch
+- large-camus：/home/kemove/zyq/giit/cardiac/yolo/datasets/camus/partition820
 <a name="YFICW"></a>
 ##### 非预训练版本多模型结构对比
 | **模型名** | **描述** | **实验结果** | **备注** |
