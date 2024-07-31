@@ -78,7 +78,10 @@ if __name__ == '__main__':
     if args.camus:
         #use camus dataset
         camus_utils = CamusProcessor(args.camus_path)
-        picked_sequence_list, camus_cfg_path = camus_utils.get_good_sequence_random()
+        if args.model == 'unet':
+            picked_sequence_list, camus_cfg_path = camus_utils.get_good_sequence('0044') #选择指定的good病例
+        else:
+            picked_sequence_list, camus_cfg_path = camus_utils.get_good_sequence_random() #随机选择一个good的病例序列帧
     elif args.video is not None:
         #use user video
         video_processor = VideoProcessor(args.video)

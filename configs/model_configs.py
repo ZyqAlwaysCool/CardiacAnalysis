@@ -2,7 +2,7 @@ SEG_MODEL_SETTINGS = {
     'yolov8-seg': {
         'model_info': {
             'model_name': 'yolov8-seg',
-            #'model_path': '/home/kemove/zyq/giit/cardiac/CardiacAnalysis/checkpoints/yolov8_best_v2.pt', # pretrained model
+            'model_path': '/home/kemove/zyq/giit/cardiac/CardiacAnalysis/checkpoints/yolov8_best_v2.pt', # pretrained model
             #'model_path': '/home/kemove/zyq/giit/cardiac/yolo/runs/segment/train24/weights/best.pt', # unetencoder maxpool
             #'model_path': '/home/kemove/zyq/giit/cardiac/yolo/runs/segment/train23/weights/best.pt', # unetencoder nomaxpool
             #'model_path': '/home/kemove/zyq/giit/cardiac/yolo/runs/segment/train25/weights/best.pt', # origin model no pretrained weight
@@ -31,8 +31,6 @@ SEG_MODEL_SETTINGS = {
             #'model_path': '/home/kemove/hyx/ultralytics_STF/runs/segment/train12/weights/best.pt', # yolov8x_DW_swin_FOCUS2_seg
             #'model_path': '/home/kemove/hyx/ultralytics_STF/runs/segment/train11/weights/best.pt', # yolov8x_DW_FOCUS_seg.yaml
             #'model_path': '/home/kemove/hyx/ultralytics_STF/runs/segment/train22/weights/best.pt', # yolov8x_DW_FOCUS_sppc_seg.yaml
-            #'model_path': '/home/kemove/zyq/giit/cardiac/yolo/runs/segment/train82/weights/best.pt',
-            'model_path': '/home/kemove/zyq/giit/cardiac/yolo/runs/segment/train74/weights/best.pt',
         }
     },
     'sam-med2d': {

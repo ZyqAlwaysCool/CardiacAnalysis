@@ -37,6 +37,7 @@ class CamusProcessor:
         随机获取图像质量为good的视频帧序列
         '''
         sequence_list = self.__find_mhd_files(self.video_path)
+        print(sequence_list)
         while(True):
             picked_one = random.choice(sequence_list)
             patient_id = picked_one.split('/')[-2]
@@ -44,6 +45,26 @@ class CamusProcessor:
             if self.__is_good_image(cfg_path):
                 real_sequence_list = self.__reshape_img(picked_one)
                 return real_sequence_list, cfg_path
+    
+    def get_good_sequence(self, patient_id):
+        '''
+        指定获取图像质量为good的视频帧序列
+        '''
+        sequence_list = self.__find_mhd_files(self.video_path)
+        target_patient = 'patient{}'.format(str(patient_id))
+        real_sequence_list = []
+        cfg_path = ''
+        
+        for sequence in sequence_list:
+            if target_patient in sequence:
+                patient_info = sequence.split('/')[-2]
+                cfg_path = self.video_path + patient_info + '/Info_{}.cfg'.format(self.match_pattern)
+                if self.__is_good_image(cfg_path):
+                    real_sequence_list = self.__reshape_img(sequence)
+                    return real_sequence_list, cfg_path
+        
+        if len(real_sequence_list) == 0:
+            return self.get_good_sequence_random()
     
     def get_all_good_sequence(self):
         '''
@@ -85,4 +106,8 @@ class CamusProcessor:
             img_lst.append(new_array)
         return img_lst
     
-    
+
+if __name__ == '__main__':
+    camus_path = '/home/kemove/zyq/giit/dataset/camus-dataset/training/'
+    camus_utils = CamusProcessor(camus_path)
+    picked_sequence_list, camus_cfg_path = camus_utils.get_good_sequence('0044')
